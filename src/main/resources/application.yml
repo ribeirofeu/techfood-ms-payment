@@ -9,7 +9,7 @@ spring:
 
 
 production:
-    url: ${production.url}q
+    url: ${production.url}
 
 #    server:
 #        error:

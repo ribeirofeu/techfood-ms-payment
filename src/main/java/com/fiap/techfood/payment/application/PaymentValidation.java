@@ -24,10 +24,6 @@ public class PaymentValidation {
 
     public static ErrorCodes processPaymentDTO(ProcessPaymentDTO processPaymentDTO, Payment payment) {
 
-        if (isInvalidOrderId(processPaymentDTO.getId())) {
-            return ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER;
-        }
-
         if (isInvalidTotalValue(processPaymentDTO.getTotalValue())) {
             return ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE;
         }

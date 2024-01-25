@@ -14,7 +14,6 @@ import java.time.ZoneOffset;
 
 @Getter
 @Setter
-@Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Payment {

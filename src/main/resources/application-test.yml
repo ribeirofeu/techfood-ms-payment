@@ -17,4 +17,4 @@ spring:
       enabled: true
 
 production:
-  url: "http://192.168.0.3:8584/version"
+  url: "http://localhost:8081/production"

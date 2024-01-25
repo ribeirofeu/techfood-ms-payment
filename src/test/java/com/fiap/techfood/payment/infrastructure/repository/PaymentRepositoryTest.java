@@ -1,6 +1,7 @@
-package com.fiap.techfood.payment.domain.interfaces.gateway;
+package com.fiap.techfood.payment.infrastructure.repository;
 
 import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
+import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import com.fiap.techfood.payment.domain.payment.Payment;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,5 +110,4 @@ public class PaymentRepositoryTest {
         assertEquals(PaymentStatus.APPROVED, payment.getStatus());
         verify(repository, times(1)).updatePaymentStatus(payment);
     }
-
 }

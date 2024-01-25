@@ -65,7 +65,7 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
                     HttpStatusCodes.SERVICE_UNAVAILABLE);
         }
 
-        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+        if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
             throw new BusinessException("Falha ao enviar pedido para produção. O serviço externo retornou um status inesperado: "
                     + responseEntity.getStatusCode().value(),
                     HttpStatusCodes.SERVICE_UNAVAILABLE);
