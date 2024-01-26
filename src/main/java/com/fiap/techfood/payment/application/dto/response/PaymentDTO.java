@@ -4,13 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
 import com.fiap.techfood.payment.domain.payment.Payment;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
 @Builder
 public class PaymentDTO {
 
