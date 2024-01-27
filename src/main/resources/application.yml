@@ -5,7 +5,7 @@ spring:
         password: ${database.password}
         driver-class-name: ${database.driver-class-name}
     profiles:
-        active: ${APP_PROFILE:dev}
+        active: ${APP_PROFILE:test}
 
 
 production:
