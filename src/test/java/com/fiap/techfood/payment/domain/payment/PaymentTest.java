@@ -10,7 +10,7 @@ import java.time.ZoneOffset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PaymentTest {
+class PaymentTest {
 
     @Test
     void testPaymentGetterSetter() {

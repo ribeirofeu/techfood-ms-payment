@@ -6,7 +6,7 @@ import org.springframework.boot.actuate.health.Status;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class HealthCheckControllerTest {
+class HealthCheckControllerTest {
 
     @Test
     void healthCheckShouldReturnUpStatus() {

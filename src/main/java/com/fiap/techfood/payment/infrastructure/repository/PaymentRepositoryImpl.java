@@ -2,7 +2,6 @@ package com.fiap.techfood.payment.infrastructure.repository;
 
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import com.fiap.techfood.payment.domain.payment.Payment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +12,6 @@ import java.util.Optional;
 @Repository
 public class PaymentRepositoryImpl implements PaymentRepository {
 
-    @Autowired
     private final SpringPaymentRepository repository;
 
     public PaymentRepositoryImpl(SpringPaymentRepository repository) {

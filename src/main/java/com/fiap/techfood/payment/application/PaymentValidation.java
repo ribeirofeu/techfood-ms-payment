@@ -3,11 +3,14 @@ package com.fiap.techfood.payment.application;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
+import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import com.fiap.techfood.payment.domain.payment.Payment;
 
 import java.math.BigDecimal;
 
 public class PaymentValidation {
+
+    private PaymentValidation() { }
 
     public static ErrorCodes generatePaymentDTO(GeneratePaymentDTO payment) {
 

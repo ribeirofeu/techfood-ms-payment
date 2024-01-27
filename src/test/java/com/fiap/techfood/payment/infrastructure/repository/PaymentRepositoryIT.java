@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase
 @Transactional
-public class PaymentRepositoryIT {
+class PaymentRepositoryIT {
 
     @Autowired
     private PaymentRepository repository;

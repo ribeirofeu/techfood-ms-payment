@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class PaymentRepositoryTest {
+class PaymentRepositoryTest {
 
     @Mock
     private PaymentRepository repository;

@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class PaymentUseCasesTest {
+class PaymentUseCasesTest {
 
     @Mock
     private PaymentRepository mockRepository;
