@@ -1,4 +1,4 @@
-package com.fiap.techfood.payment.application.service;
+package com.fiap.techfood.payment.infrastructure.service;
 
 import com.fiap.techfood.payment.application.dto.request.ProductionDTO;
 import org.springframework.beans.factory.annotation.Value;

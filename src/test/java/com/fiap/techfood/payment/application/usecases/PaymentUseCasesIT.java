@@ -4,7 +4,7 @@ import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.ProductionDTO;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
-import com.fiap.techfood.payment.application.service.Notification;
+import com.fiap.techfood.payment.infrastructure.service.Notification;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
 import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase
 @Transactional
-public class PaymentUseCasesITest {
+public class PaymentUseCasesIT {
 
     @Autowired
     private PaymentUseCases useCases;
