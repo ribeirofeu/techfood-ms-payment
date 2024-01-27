@@ -1,0 +1,16 @@
+spring:
+    datasource:
+        url: ${database.url}
+        username: ${database.username}
+        password: ${database.password}
+        driver-class-name: ${database.driver-class-name}
+    profiles:
+        active: ${APP_PROFILE:dev}
+
+
+production:
+    url: ${production.url}
+
+#    server:
+#        error:
+#            include-stacktrace: never

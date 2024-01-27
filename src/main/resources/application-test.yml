@@ -1,0 +1,20 @@
+database:
+  url: jdbc:h2:mem:testdb
+  username: sa
+  password: password
+  driver-class-name: org.h2.Driver
+
+spring:
+  jpa:
+    defer-datasource-initialization: true
+    database: h2
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+
+production:
+  url: "http://localhost:8081/production"
