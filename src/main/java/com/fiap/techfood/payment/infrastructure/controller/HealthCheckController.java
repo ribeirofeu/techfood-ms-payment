@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HealthCheckController implements HealthIndicator {
 
-    public HealthCheckController() {}
+    public HealthCheckController() throws UnsupportedOperationException {}
 
     @Override
     public Health getHealth(boolean includeDetails) {

@@ -4,6 +4,8 @@ import java.security.SecureRandom;
 
 public class QRCode {
 
+    private QRCode() {}
+
     private static final int CODE_SIZE = 10;
 
     public static String generateQRCode() {

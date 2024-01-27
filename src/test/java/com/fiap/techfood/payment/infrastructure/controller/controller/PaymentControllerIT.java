@@ -24,7 +24,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase
 @Transactional
-public class PaymentControllerIT {
+class PaymentControllerIT {
     @LocalServerPort
     private int port;
 

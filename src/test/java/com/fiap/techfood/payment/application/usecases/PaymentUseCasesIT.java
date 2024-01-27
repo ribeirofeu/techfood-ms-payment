@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase
 @Transactional
-public class PaymentUseCasesIT {
+class PaymentUseCasesIT {
 
     @Autowired
     private PaymentUseCases useCases;
