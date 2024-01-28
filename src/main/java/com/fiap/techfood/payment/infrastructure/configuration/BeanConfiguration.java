@@ -1,7 +1,8 @@
 package com.fiap.techfood.payment.infrastructure.configuration;
 
+import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
-import com.fiap.techfood.payment.infrastructure.service.Notification;
+import com.fiap.techfood.payment.infrastructure.service.NotificationImpl;
 import com.fiap.techfood.payment.application.usecases.PaymentUseCasesImpl;
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ public class BeanConfiguration {
 
     @Bean
     Notification notification(RestTemplate restTemplate) {
-        return new Notification(restTemplate);
+        return new NotificationImpl(restTemplate);
     }
 
     @Bean

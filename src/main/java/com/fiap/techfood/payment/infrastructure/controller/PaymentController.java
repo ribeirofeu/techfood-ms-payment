@@ -22,7 +22,7 @@ public class PaymentController {
     }
 
     @Tag(name = "Gera dados para o pagamento")
-    @PostMapping
+    @PostMapping("/generate")
     public ResponseEntity<ProcessPaymentDTO> generatePayment(@RequestBody GeneratePaymentDTO request) {
         return ResponseEntity.ok(service.generatePaymentQRCode(request));
     }

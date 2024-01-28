@@ -2,7 +2,7 @@ package com.fiap.techfood.payment.application.usecases;
 
 import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
-import com.fiap.techfood.payment.infrastructure.service.Notification;
+import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
 import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class PaymentUseCasesTest {
 
     @Mock
@@ -139,7 +141,7 @@ class PaymentUseCasesTest {
 
         when(mockRepository.findById(anyLong())).thenReturn(Optional.of(generatePayment()));
         when(mockNotification.send(any()))
-                .thenReturn(new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.CREATED));
+                .thenReturn(new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK));
         doNothing().when(mockRepository).updatePaymentStatus(any());
 
         //Act
@@ -292,13 +294,13 @@ class PaymentUseCasesTest {
     }
 
     @Test
-    void processPayment_InvalidNotification_StatusCodeOK_ThrowsBusinessException() {
+    void processPayment_InvalidNotification_StatusCodeCreated_ThrowsBusinessException() {
         //Arrange
         var processPaymentDTO = processPaymentDTO();
 
         when(mockRepository.findById(anyLong())).thenReturn(Optional.of(generatePayment()));
         when(mockNotification.send(any()))
-                .thenReturn(new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK));
+                .thenReturn(new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.CREATED));
 
         //Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,
@@ -308,7 +310,7 @@ class PaymentUseCasesTest {
         assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.SERVICE_UNAVAILABLE.getCode());
         assertThat(exception.getMessage())
                 .isEqualTo("Falha ao enviar pedido para produção. O serviço externo retornou um status inesperado: "
-                        + HttpStatus.OK.value());
+                        + HttpStatus.CREATED.value());
         verify(mockRepository, times(1)).findById(anyLong());
         verify(mockNotification, times(1)).send(any());
     }
