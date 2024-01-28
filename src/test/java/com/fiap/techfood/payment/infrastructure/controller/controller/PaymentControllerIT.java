@@ -42,7 +42,7 @@ class PaymentControllerIT {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(generatePaymentDTO)
                 .when()
-                .post("/payment")
+                .post("/payment/generate")
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body(matchesJsonSchemaInClasspath("schemas/processPayment.schema.json"));
@@ -57,7 +57,7 @@ class PaymentControllerIT {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(generatePaymentDTO)
                 .when()
-                .post("/payment")
+                .post("/payment/generate")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body(equalTo(expectedMessage));
@@ -71,7 +71,7 @@ class PaymentControllerIT {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(generatePaymentDTO)
                 .when()
-                .post("/payment")
+                .post("/payment/generate")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body(equalTo(expectedMessage));
@@ -85,7 +85,7 @@ class PaymentControllerIT {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(generatePaymentDTO)
                 .when()
-                .post("/payment")
+                .post("/payment/generate")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body(equalTo(expectedMessage));
@@ -99,7 +99,7 @@ class PaymentControllerIT {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(generatePaymentDTO)
                 .when()
-                .post("/payment")
+                .post("/payment/generate")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body(equalTo(expectedMessage));

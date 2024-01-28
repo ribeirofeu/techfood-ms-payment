@@ -59,7 +59,7 @@ class PaymentControllerTest {
 
         //Act
         mockMvc.perform(
-                post("/payment")
+                post("/payment/generate")
                         .content(asJsonString(generatePaymentDTO))
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
@@ -75,7 +75,7 @@ class PaymentControllerTest {
 
         //Act
         mockMvc.perform(
-                post("/payment")
+                post("/payment/generate")
                         .content(asJsonString(generatePaymentDTO))
                         .contentType(MediaType.APPLICATION_XML)
         ).andExpect(status().isUnsupportedMediaType());

@@ -3,8 +3,8 @@ package com.fiap.techfood.payment.application.usecases;
 import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.ProductionDTO;
+import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
-import com.fiap.techfood.payment.infrastructure.service.Notification;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
 import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
@@ -148,7 +148,7 @@ class PaymentUseCasesIT {
         var processPaymentDto = ProcessPaymentDTO.fromPayment(payment);
 
         doAnswer(invocation -> {
-            return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.CREATED);
+            return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK);
         }).when(service).send(any(ProductionDTO.class));
 
         // Act
@@ -166,14 +166,14 @@ class PaymentUseCasesIT {
         var processPaymentDto = ProcessPaymentDTO.fromPayment(payment);
 
         doAnswer(invocation -> {
-            return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK);
+            return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.CREATED);
         }).when(service).send(any(ProductionDTO.class));
 
         // Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,
                 () -> mockUseCases.processPayment(processPaymentDto));
         assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.SERVICE_UNAVAILABLE.getCode());
-        assertThat(exception.getMessage()).isEqualTo("Falha ao enviar pedido para produção. O serviço externo retornou um status inesperado: 200");
+        assertThat(exception.getMessage()).isEqualTo("Falha ao enviar pedido para produção. O serviço externo retornou um status inesperado: 201");
     }
 
     @Test

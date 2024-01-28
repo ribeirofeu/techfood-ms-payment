@@ -5,8 +5,9 @@ import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.ProductionDTO;
 import com.fiap.techfood.payment.application.dto.response.PaymentDTO;
+import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
-import com.fiap.techfood.payment.infrastructure.service.Notification;
+import com.fiap.techfood.payment.infrastructure.service.NotificationImpl;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
 import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
@@ -65,7 +66,7 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
                     HttpStatusCodes.SERVICE_UNAVAILABLE);
         }
 
-        if (responseEntity.getStatusCode() != HttpStatus.CREATED) {
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
             throw new BusinessException("Falha ao enviar pedido para produção. O serviço externo retornou um status inesperado: "
                     + responseEntity.getStatusCode().value(),
                     HttpStatusCodes.SERVICE_UNAVAILABLE);
