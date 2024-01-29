@@ -18,11 +18,7 @@ public class NotificationImpl implements Notification {
     }
 
     public ResponseEntity<String> send(ProductionDTO request) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Cache-Control", "no-cache");
-        headers.set("Pragma", "no-cache");
-
-        HttpEntity<ProductionDTO> requestEntity = new HttpEntity<>(request, headers);
+        HttpEntity<ProductionDTO> requestEntity = new HttpEntity<>(request);
 
         return restTemplate.postForEntity(
                 productionUrl,
