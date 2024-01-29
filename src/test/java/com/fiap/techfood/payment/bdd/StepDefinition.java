@@ -18,7 +18,7 @@ public class StepDefinition {
 
     private Response response;
 
-    private final String ENDPOINT_API = "http://localhost:8080/payment";
+    private final String ENDPOINT_API = "http://localhost:8080/payment/generate";
 
     @Dado("que inicio o processo de pagamento de um pedido")
     public void que_inicio_o_processo_de_pagamento_de_um_pedido() {
