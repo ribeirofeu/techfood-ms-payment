@@ -1,0 +1,15 @@
+database:
+  username: ${MYSQL_USERNAME}
+  password: ${MYSQL_PASSWORD}
+  url: ${MYSQL_HOST}
+  driver-class-name: com.mysql.cj.jdbc.Driver
+
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+
+production:
+  url: ${PRODUCTION_URL}
+  

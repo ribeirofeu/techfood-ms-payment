@@ -30,7 +30,7 @@ mvn test
 ### Gerar QRCode de pagamento
 ```
 [POST]
-http://localhost:8080/payment
+http://localhost:8080/payment/generate
 
 SCHEMA
 
