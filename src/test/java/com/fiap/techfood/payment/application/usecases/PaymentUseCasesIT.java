@@ -78,6 +78,36 @@ class PaymentUseCasesIT {
     }
 
     @Test
+    void givenValidPaymentDTO_thenShouldReturnPaymentDTO() {
+        //Arrange
+        long orderId = 2L;
+
+        //Act
+        var paymentDTO = useCases.getPayment(orderId);
+
+        //Assert
+        assertThat(paymentDTO).isNotNull();
+        assertThat(paymentDTO.getTotalValue()).isNotNull();
+        assertThat(paymentDTO.getDetails()).isNotNull();
+        assertThat(paymentDTO.getStatus()).isNotNull();
+        assertThat(paymentDTO.getId()).isEqualTo(orderId);
+    }
+
+    @Test
+    void getPaymentDTO_WhenOrderIdIsInvalid_ThrowsBusinessException() {
+        //Arrange
+        long orderId = 20L;
+
+        //Act
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> useCases.getPayment(orderId));
+
+        //Assert
+        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
+        assertThat(exception.getMessage()).isEqualTo("Pedido não encontrado.");
+    }
+
+    @Test
     void generatePaymentQRCode_WhenOrderIdIsNull_ThrowsBusinessException() {
         //Arrange
         Long orderId = null;

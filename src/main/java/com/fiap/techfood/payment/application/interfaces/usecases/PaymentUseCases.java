@@ -9,4 +9,6 @@ public interface PaymentUseCases {
     ProcessPaymentDTO generatePaymentQRCode(GeneratePaymentDTO request);
 
     PaymentDTO processPayment(ProcessPaymentDTO qrCode);
+
+    PaymentDTO getPayment(long orderId);
 }

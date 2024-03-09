@@ -12,4 +12,3 @@ spring:
 
 production:
   url: ${PRODUCTION_URL}
-  

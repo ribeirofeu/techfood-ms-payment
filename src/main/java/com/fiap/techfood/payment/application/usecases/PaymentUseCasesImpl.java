@@ -78,4 +78,13 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
 
         return PaymentDTO.fromPayment(payment);
     }
+
+    @Override
+    public PaymentDTO getPayment(long orderId) {
+        Payment payment = repository.findById(orderId).orElseThrow(
+                () -> new BusinessException("Pedido não encontrado.", HttpStatusCodes.BAD_REQUEST)
+        );
+
+        return PaymentDTO.fromPayment(payment);
+    }
 }

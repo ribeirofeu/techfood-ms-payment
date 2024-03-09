@@ -5,6 +5,7 @@ import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
+import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
 import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import com.fiap.techfood.payment.domain.payment.Payment;
@@ -291,6 +292,42 @@ class PaymentUseCasesTest {
                 .isEqualTo("Falha ao enviar pedido para produção. Tente novamente mais tarde! :(");
         verify(mockRepository, times(1)).findById(anyLong());
         verify(mockNotification, times(1)).send(any());
+    }
+
+    @Test
+    void givenValidPaymentDTO_thenShouldReturnPaymentDTO() {
+        //Arrange
+        long orderId = 1L;
+
+        when(mockRepository.findById(anyLong())).thenReturn(Optional.of(generatePayment()));
+
+        //Act
+        var paymentDTO = mockPaymentUseCases.getPayment(orderId);
+
+        //Assert
+        assertThat(paymentDTO).isNotNull();
+        assertThat(paymentDTO.getId()).isEqualTo(1L);
+        assertThat(paymentDTO.getDetails()).isNotNull();
+        assertThat(paymentDTO.getTotalValue()).isNotNull();
+        assertThat(paymentDTO.getStatus()).isEqualTo(PaymentStatus.WAITING_FOR_PAYMENT);
+        verify(mockRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void getPaymentDTO_WhenOrderIdIsInvalid_ThrowsBusinessException() {
+        //Arrange
+        long orderId = 1L;
+
+        when(mockRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        //Act & Assert
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> mockPaymentUseCases.getPayment(orderId));
+
+        assertThat(exception).isNotNull();
+        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
+        assertThat(exception.getMessage()).isEqualTo("Pedido não encontrado.");
+        verify(mockRepository, times(1)).findById(anyLong());
     }
 
     @Test

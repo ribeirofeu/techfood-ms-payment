@@ -174,4 +174,28 @@ class PaymentControllerIT {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body(equalTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage()));
     }
+
+    @Test
+    void givenPaymentDTO_whenOrderIdIsValid_thenShouldReturnPaymentDTO() {
+        long orderId = 1L;
+        given()
+                .param("orderId", orderId)
+                .when()
+                .get("/payment/"+orderId)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(matchesJsonSchemaInClasspath("schemas/payment.schema.json"));
+    }
+
+    @Test
+    void givenInvalidPaymentDTO_whenOrderIdIsInvalid_thenShouldReturnBadRequest() {
+        long orderId = 10L;
+        given()
+                .param("orderId", orderId)
+                .when()
+                .get("/payment/"+orderId)
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body(equalTo("Pedido não encontrado."));
+    }
 }
