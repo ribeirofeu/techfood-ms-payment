@@ -2,8 +2,9 @@ package com.fiap.techfood.payment.infrastructure.controller.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.application.dto.response.PaymentDTO;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
@@ -87,14 +88,13 @@ class PaymentControllerTest {
     @Test
     void processPaymentWithSuccess() throws Exception {
         //Arrange
-        var processPaymentDTO = ProcessPaymentDTO.builder()
+        var processPaymentDTO = PaymentProcessedDTO.builder()
                 .id(1L)
-                .totalValue(BigDecimal.valueOf(10.5))
-                .qrCode("")
+                .status(PaymentStatus.APPROVED)
                 .build();
 
         var paymentDTO = PaymentDTO.builder().status(PaymentStatus.APPROVED).totalValue(BigDecimal.valueOf(10.5)).id(1L).details("TESTE").build();
-        when(service.processPayment(any(ProcessPaymentDTO.class))).thenReturn(paymentDTO);
+        when(service.processPayment(any(PaymentProcessedDTO.class))).thenReturn(paymentDTO);
 
         //Act
         mockMvc.perform(
@@ -104,13 +104,13 @@ class PaymentControllerTest {
         ).andExpect(status().isOk());
 
         //Assert
-        verify(service, times(1)).processPayment(any(ProcessPaymentDTO.class));
+        verify(service, times(1)).processPayment(any(PaymentProcessedDTO.class));
     }
 
     @Test
     void processPaymentWithInvalidMediaType() throws Exception {
         //Arrange
-        var processPaymentDTO = "<ProcessPaymentDTO><idPedido>123</idPedido><valorTotal>10.5</valorTotal><qrCode>\"Test\"</qrCode></ProcessPaymentDTO>";
+        var processPaymentDTO = "<ProcessPaymentDTO><idPedido>123</idPedido><status>\"APPROVED\"</status></ProcessPaymentDTO>";
 
         //Act
         mockMvc.perform(
@@ -120,7 +120,7 @@ class PaymentControllerTest {
         ).andExpect(status().isUnsupportedMediaType());
 
         //Assert
-        verify(service, never()).processPayment(any(ProcessPaymentDTO.class));
+        verify(service, never()).processPayment(any(PaymentProcessedDTO.class));
     }
 
     private static String asJsonString(final Object object) throws JsonProcessingException {

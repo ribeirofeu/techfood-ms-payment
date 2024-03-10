@@ -1,7 +1,8 @@
 package com.fiap.techfood.payment.infrastructure.controller;
 
-import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.application.dto.response.PaymentDTO;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +28,7 @@ public class PaymentController {
 
     @Tag(name = "Processa pagamento")
     @PostMapping(value = "/webhook", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PaymentDTO> processPayment(@RequestBody ProcessPaymentDTO request) {
+    public ResponseEntity<PaymentDTO> processPayment(@RequestBody PaymentProcessedDTO request) {
         return ResponseEntity.ok(service.processPayment(request));
     }
 

@@ -1,12 +1,13 @@
 package com.fiap.techfood.payment.application.usecases;
 
-import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.application.dto.request.ProductionDTO;
 import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
+import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
 import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -87,6 +88,7 @@ class PaymentUseCasesIT {
 
         //Assert
         assertThat(paymentDTO).isNotNull();
+        assertThat(paymentDTO.toString()).isNotNull();
         assertThat(paymentDTO.getTotalValue()).isNotNull();
         assertThat(paymentDTO.getDetails()).isNotNull();
         assertThat(paymentDTO.getStatus()).isNotNull();
@@ -174,26 +176,25 @@ class PaymentUseCasesIT {
     @Test
     void generatePaymentQRCode_WhenNotificationSucceeds_ReturnsSuccessfulPaymentDTO() {
         //Arrange
-        var payment = repository.findById(2L).orElseThrow();
-        var processPaymentDto = ProcessPaymentDTO.fromPayment(payment);
+        var paymentProcessedDTO = new PaymentProcessedDTO(2L, PaymentStatus.APPROVED);
 
         doAnswer(invocation -> {
             return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK);
         }).when(service).send(any(ProductionDTO.class));
 
         // Act
-        var paymentDTO = mockUseCases.processPayment(processPaymentDto);
+        var paymentDTO = mockUseCases.processPayment(paymentProcessedDTO);
 
         //Assert
         assertThat(paymentDTO).isNotNull();
+        assertThat(paymentDTO.toString()).isNotNull();
         verify(service, times(1)).send(any(ProductionDTO.class));
     }
 
     @Test
     void processPayment_WhenNotificationFailsWithIncorrectStatusCode_ThrowsBusinessException() {
         //Arrange
-        var payment = repository.findById(2L).orElseThrow();
-        var processPaymentDto = ProcessPaymentDTO.fromPayment(payment);
+        var paymentProcessedDTO = new PaymentProcessedDTO(2L, PaymentStatus.APPROVED);
 
         doAnswer(invocation -> {
             return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.CREATED);
@@ -201,91 +202,25 @@ class PaymentUseCasesIT {
 
         // Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> mockUseCases.processPayment(processPaymentDto));
+                () -> mockUseCases.processPayment(paymentProcessedDTO));
         assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.SERVICE_UNAVAILABLE.getCode());
         assertThat(exception.getMessage()).isEqualTo("Falha ao enviar pedido para produção. O serviço externo retornou um status inesperado: 201");
     }
 
     @Test
-    void processPayment_WhenNotificationServiceFails_ThrowsBusinessException() {
+    void processPayment_WhenStausUnexpected_ThrowsBusinessException() {
         //Arrange
-        var payment = repository.findById(2L).orElseThrow();
-        var processPaymentDto = ProcessPaymentDTO.fromPayment(payment);
-
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> useCases.processPayment(processPaymentDto));
-
-        //Asset
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.SERVICE_UNAVAILABLE.getCode());
-        assertThat(exception.getMessage()).isEqualTo("Falha ao enviar pedido para produção. Tente novamente mais tarde! :(");
-    }
-
-    @Test
-    void processPayment_WhenPaymentNotFound_ThrowsBusinessException() {
-        //Arrange
-        var processPaymentDto = ProcessPaymentDTO.builder().id(10L).build();
-
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> useCases.processPayment(processPaymentDto));
-
-        //Assert
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
-        assertThat(exception.getMessage()).isEqualTo("Pedido não encontrado.");
-    }
-
-    @Test
-    void processPayment_WhenInvalidQRCode_ThrowsBusinessException() {
-        //Arrange
-        var payment = repository.findById(2L).orElseThrow();
-        payment.setQrCode("invalid");
-        var processPaymentDto = ProcessPaymentDTO.fromPayment(payment);
+        var paymentProcessedDTO = new PaymentProcessedDTO(2L, PaymentStatus.WAITING_FOR_PAYMENT);
 
         doAnswer(invocation -> {
-            return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK);
+            return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.CREATED);
         }).when(service).send(any(ProductionDTO.class));
 
         // Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,
-                () -> mockUseCases.processPayment(processPaymentDto));
+                () -> mockUseCases.processPayment(paymentProcessedDTO));
+
         assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
-        assertThat(exception.getMessage()).isEqualTo(ErrorCodes.INVALID_QRCODE.getMessage());
-    }
-
-    @Test
-    void processPayment_WhenEmptyQRCode_ThrowsBusinessException() {
-        //Arrange
-        var payment = repository.findById(2L).orElseThrow();
-        payment.setQrCode("");
-        var processPaymentDto = ProcessPaymentDTO.fromPayment(payment);
-
-        doAnswer(invocation -> {
-            return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK);
-        }).when(service).send(any(ProductionDTO.class));
-
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> mockUseCases.processPayment(processPaymentDto));
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
-        assertThat(exception.getMessage()).isEqualTo(ErrorCodes.NULL_OR_INVALID_QRCODE.getMessage());
-    }
-
-    @Test
-    void processPayment_WhenInvalidTotalValue_ThrowsBusinessException() {
-        //Arrange
-        var payment = repository.findById(2L).orElseThrow();
-        payment.setTotalValue(BigDecimal.valueOf(-2));
-        var processPaymentDto = ProcessPaymentDTO.fromPayment(payment);
-
-        doAnswer(invocation -> {
-            return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK);
-        }).when(service).send(any(ProductionDTO.class));
-
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> mockUseCases.processPayment(processPaymentDto));
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
-        assertThat(exception.getMessage()).isEqualTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage());
+        assertThat(exception.getMessage()).isEqualTo(ErrorCodes.UNEXPECTED_STATUS.getMessage());
     }
 }

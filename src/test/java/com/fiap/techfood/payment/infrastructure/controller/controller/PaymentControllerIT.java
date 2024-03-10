@@ -1,6 +1,6 @@
 package com.fiap.techfood.payment.infrastructure.controller.controller;
 
-import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import io.restassured.RestAssured;
@@ -116,63 +116,6 @@ class PaymentControllerIT {
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body(equalTo("Pedido não encontrado."));
-    }
-
-    @Test
-    void givenInvalidQRCode_whenProcessPayment_thenShouldReturnBadRequest() {
-        var processPaymentDto = ProcessPaymentDTO
-                .builder()
-                .id(2L)
-                .totalValue(BigDecimal.valueOf(10.1))
-                .qrCode("INVÁLIDO")
-                .build();
-
-        given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(processPaymentDto)
-                .when()
-                .post("/payment/webhook")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(equalTo(ErrorCodes.INVALID_QRCODE.getMessage()));
-    }
-
-    @Test
-    void givenInvalidTotalValue_whenProcessPayment_thenShouldReturnBadRequest() {
-        var processPaymentDto = ProcessPaymentDTO
-                .builder()
-                .id(2L)
-                .totalValue(BigDecimal.valueOf(-10.1))
-                .qrCode("NTc1NjY0NzUzMQ==")
-                .build();
-
-        given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(processPaymentDto)
-                .when()
-                .post("/payment/webhook")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(equalTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage()));
-    }
-
-    @Test
-    void givenNullTotalValue_whenProcessPayment_thenShouldReturnBadRequest() {
-        var processPaymentDto = ProcessPaymentDTO
-                .builder()
-                .id(2L)
-                .totalValue(null)
-                .qrCode("NTc1NjY0NzUzMQ==")
-                .build();
-
-        given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(processPaymentDto)
-                .when()
-                .post("/payment/webhook")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(equalTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage()));
     }
 
     @Test

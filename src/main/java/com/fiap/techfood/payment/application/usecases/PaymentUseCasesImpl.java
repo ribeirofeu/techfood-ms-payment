@@ -1,16 +1,15 @@
 package com.fiap.techfood.payment.application.usecases;
 
 import com.fiap.techfood.payment.application.PaymentValidation;
-import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.application.dto.request.ProductionDTO;
 import com.fiap.techfood.payment.application.dto.response.PaymentDTO;
 import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
-import com.fiap.techfood.payment.infrastructure.service.NotificationImpl;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
-import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
 import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import com.fiap.techfood.payment.domain.payment.Payment;
@@ -44,13 +43,13 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
     }
 
     @Override
-    public PaymentDTO processPayment(ProcessPaymentDTO request) {
+    public PaymentDTO processPayment(PaymentProcessedDTO request) {
 
         Payment payment = repository.findById(request.getId()).orElseThrow(
                 () -> new BusinessException("Pedido não encontrado.", HttpStatusCodes.BAD_REQUEST)
         );
 
-        ErrorCodes error = PaymentValidation.processPaymentDTO(request, payment);
+        ErrorCodes error = PaymentValidation.processPaymentDTO(request);
 
         if (error != ErrorCodes.SUCCESS) {
             throw new BusinessException(error.getMessage(), HttpStatusCodes.BAD_REQUEST);
@@ -72,7 +71,7 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
                     HttpStatusCodes.SERVICE_UNAVAILABLE);
         }
 
-        payment.setStatus(PaymentStatus.APPROVED);
+        payment.setStatus(request.getStatus());
 
         repository.updatePaymentStatus(payment);
 
