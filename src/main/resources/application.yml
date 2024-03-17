@@ -8,6 +8,17 @@ spring:
         driver-class-name: ${database.driver-class-name}
     profiles:
         active: ${APP_PROFILE:prod}
+    cloud:
+        aws:
+            region:
+                static: us-east-1
+            credentials:
+                access-key: ${AWS_ACCESS_KEY}
+                secret-key: ${AWS_SECRET_KEY}
 
 production:
     url: ${production.url}
+
+messaging:
+    output: "arn:aws:sns:us-east-1:027260563052:created_orders_topic"
+    input: "created_order_ms_payment_queue"
