@@ -4,7 +4,7 @@ import com.fiap.techfood.payment.application.interfaces.gateways.PaymentMessageS
 import com.fiap.techfood.payment.application.interfaces.gateway.ExternalServicePayment;
 import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
-import com.fiap.techfood.payment.infrastructure.messaging.sender.PaymentMessageSnsSender;
+import com.fiap.techfood.payment.infrastructure.messaging.senders.PaymentMessageSnsSender;
 import com.fiap.techfood.payment.infrastructure.service.NotificationImpl;
 import com.fiap.techfood.payment.application.usecases.PaymentUseCasesImpl;
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;

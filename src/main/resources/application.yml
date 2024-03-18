@@ -20,6 +20,6 @@ production:
     url: ${production.url}
 
 events:
-    output: "arn:aws:sns:us-east-1:027260563052:created_orders_topic"
+    output: "arn:aws:sns:us-east-1:027260563052:received_payments_topic"
     queues:
         created-order: "created_order_ms_payment_queue"

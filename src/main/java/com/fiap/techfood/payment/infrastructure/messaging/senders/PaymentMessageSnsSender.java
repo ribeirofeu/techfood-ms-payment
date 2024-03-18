@@ -1,4 +1,4 @@
-package com.fiap.techfood.payment.infrastructure.messaging.sender;
+package com.fiap.techfood.payment.infrastructure.messaging.senders;
 
 import com.fiap.techfood.payment.application.interfaces.gateways.PaymentMessageSender;
 import com.fiap.techfood.payment.domain.commons.Event;

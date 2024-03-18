@@ -66,6 +66,7 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
         );
 
         payment.setQrCode(externalServicePayment.generateQRCode());
+        payment.setStatus(PaymentStatus.WAITING_FOR_PAYMENT);
 
         repository.save(payment);
 
@@ -78,7 +79,8 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
         Payment payment = repository.findById(request.getId())
                 .orElseThrow(() -> new BusinessException("Pedido não encontrado.", HttpStatusCodes.BAD_REQUEST));
 
-        payment.setStatus(getAndValidatePaymentStatus(request));
+        validateReceivedStatus(request, payment);
+        payment.setStatus(request.getStatus());
         repository.updatePaymentStatus(payment);
 
         paymentMessageSender.publish(ReceivedPaymentStatusEvent.builder()
@@ -91,12 +93,14 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
         return PaymentDTO.fromPayment(payment);
     }
 
-    private PaymentStatus getAndValidatePaymentStatus(PaymentProcessedDTO request) {
+    private void validateReceivedStatus(PaymentProcessedDTO request, Payment payment) {
         if (!List.of(PaymentStatus.APPROVED, PaymentStatus.REJECTED).contains(request.getStatus())) {
-            throw new BusinessException("Inválid payment status", HttpStatusCodes.BAD_REQUEST);
+            throw new BusinessException(ErrorCodes.UNEXPECTED_STATUS.getMessage(), HttpStatusCodes.BAD_REQUEST);
         }
 
-        return request.getStatus();
+        if (!payment.getStatus().equals(PaymentStatus.WAITING_FOR_PAYMENT)) {
+            throw new BusinessException(ErrorCodes.PAYMENT_ALREADY_PROCESSED.getMessage(), HttpStatusCodes.BAD_REQUEST);
+        }
     }
 
     @Override
