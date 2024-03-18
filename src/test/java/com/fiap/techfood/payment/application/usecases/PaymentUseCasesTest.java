@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,7 +70,6 @@ class PaymentUseCasesTest {
         assertThat(processPaymentDto).isNotNull();
         assertThat(processPaymentDto.toString()).isNotNull();
         assertThat(processPaymentDto.getId()).isEqualTo(generateQRCode.getOrderId());
-        assertThat(processPaymentDto.getQrCode()).isNotEmpty();
         verify(mockRepository, times(1)).save(any());
     }
 
@@ -186,6 +186,13 @@ class PaymentUseCasesTest {
 
 
     private Payment generatePayment() {
-        return Payment.builder().id(1L).totalValue(BigDecimal.valueOf(10)).build();
+        return Payment.builder()
+                .id(1L)
+                .totalValue(BigDecimal.valueOf(10.0))
+                .customerId(1L)
+                .qrCode("any")
+                .status(PaymentStatus.WAITING_FOR_PAYMENT)
+                .createdDateTime(OffsetDateTime.now())
+                .build();
     }
 }

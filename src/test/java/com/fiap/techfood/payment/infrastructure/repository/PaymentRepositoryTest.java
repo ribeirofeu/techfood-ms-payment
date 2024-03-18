@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +42,7 @@ class PaymentRepositoryTest {
     @Test
     void givenValidPayment_whenFindPaymentById_thenShouldReturnPayment() {
         //Arrange
-        var payment = Payment.generate(1, BigDecimal.valueOf(10.0));
+        var payment = generatePayment();
 
         when(repository.findById(anyLong())).thenReturn(Optional.ofNullable(payment));
 
@@ -56,7 +57,7 @@ class PaymentRepositoryTest {
     @Test
     void givenInvalidPaymentId_whenFindPaymentById_thenShouldReturnEmptyOptional() {
         //Arrange
-        var payment = Payment.generate(1, BigDecimal.valueOf(10.0));
+        var payment = generatePayment();
 
         when(repository.findById(1)).thenReturn(Optional.ofNullable(payment));
 
@@ -71,7 +72,8 @@ class PaymentRepositoryTest {
     @Test
     void givenValidPayment_whenSavePayment_thenShouldReturnSavedPayment() {
         //Arrange
-        var payment = Payment.generate(1, BigDecimal.valueOf(10.0));
+        var payment = generatePayment();
+
         when(repository.save(any())).thenReturn(payment);
 
         //Act
@@ -85,7 +87,8 @@ class PaymentRepositoryTest {
     @Test
     void givenNullPayment_whenSavePayment_thenShouldReturnNull() {
         //Arrange
-        var payment = Payment.generate(1, BigDecimal.valueOf(10.0));
+        var payment = generatePayment();
+
         when(repository.save(payment)).thenReturn(payment);
 
         //Act
@@ -99,7 +102,8 @@ class PaymentRepositoryTest {
     @Test
     void givenPayment_whenUpdatePaymentStatus_thenShouldUpdateStatusToApproved() {
         //Arrange
-        var payment = Payment.generate(1, BigDecimal.valueOf(10.0));
+        var payment = generatePayment();
+
         doAnswer(invocation -> {
             payment.setStatus(PaymentStatus.APPROVED);
             return null;
@@ -111,5 +115,16 @@ class PaymentRepositoryTest {
         //Assert
         assertEquals(PaymentStatus.APPROVED, payment.getStatus());
         verify(repository, times(1)).updatePaymentStatus(payment);
+    }
+
+    private Payment generatePayment() {
+        return Payment.builder()
+                .id(1L)
+                .totalValue(BigDecimal.valueOf(10.0))
+                .customerId(1L)
+                .qrCode("any")
+                .status(PaymentStatus.WAITING_FOR_PAYMENT)
+                .createdDateTime(OffsetDateTime.now())
+                .build();
     }
 }

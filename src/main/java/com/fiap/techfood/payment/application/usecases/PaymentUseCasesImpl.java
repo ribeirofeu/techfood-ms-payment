@@ -66,6 +66,7 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
         );
 
         payment.setQrCode(externalServicePayment.generateQRCode());
+        payment.setStatus(PaymentStatus.WAITING_FOR_PAYMENT);
 
         repository.save(payment);
 
@@ -93,7 +94,7 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
 
     private PaymentStatus getAndValidatePaymentStatus(PaymentProcessedDTO request) {
         if (!List.of(PaymentStatus.APPROVED, PaymentStatus.REJECTED).contains(request.getStatus())) {
-            throw new BusinessException("Inválid payment status", HttpStatusCodes.BAD_REQUEST);
+            throw new BusinessException(ErrorCodes.UNEXPECTED_STATUS.getMessage(), HttpStatusCodes.BAD_REQUEST);
         }
 
         return request.getStatus();

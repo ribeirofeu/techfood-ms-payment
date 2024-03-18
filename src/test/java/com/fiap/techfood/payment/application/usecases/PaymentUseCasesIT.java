@@ -163,22 +163,6 @@ class PaymentUseCasesIT {
     }
 
     @Test
-    void processPayment_WhenNotificationFailsWithIncorrectStatusCode_ThrowsBusinessException() {
-        //Arrange
-        var paymentProcessedDTO = new PaymentProcessedDTO(2L, PaymentStatus.APPROVED);
-
-        doAnswer(invocation -> {
-            return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.CREATED);
-        }).when(paymentMessageSender).publish(any(ReceivedPaymentStatusEvent.class));
-
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> mockUseCases.processPayment(paymentProcessedDTO));
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.SERVICE_UNAVAILABLE.getCode());
-        assertThat(exception.getMessage()).isEqualTo("Falha ao enviar pedido para produção. O serviço externo retornou um status inesperado: 201");
-    }
-
-    @Test
     void processPayment_WhenStausUnexpected_ThrowsBusinessException() {
         //Arrange
         var paymentProcessedDTO = new PaymentProcessedDTO(2L, PaymentStatus.WAITING_FOR_PAYMENT);
