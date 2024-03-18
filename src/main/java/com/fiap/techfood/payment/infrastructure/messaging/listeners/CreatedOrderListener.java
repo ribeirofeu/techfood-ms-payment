@@ -8,11 +8,13 @@ import com.fiap.techfood.payment.infrastructure.messaging.events.CreatedOrderEve
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @AllArgsConstructor
+@Profile("!test")
 public class CreatedOrderListener {
 
     private PaymentUseCases paymentUseCases;

@@ -28,7 +28,14 @@ class PaymentRepositoryIT {
     @Test
     void givenValidPayment_whenSavePayment_thenShouldReturnSavedPayment() {
         //Arrange
-        var payment = Payment.builder().id(10).totalValue(BigDecimal.valueOf(10.5)).build();
+        var payment = Payment.builder()
+                .id(10L)
+                .totalValue(BigDecimal.valueOf(10.0))
+                .customerId(1L)
+                .qrCode("any")
+                .status(PaymentStatus.WAITING_FOR_PAYMENT)
+                .createdDateTime(OffsetDateTime.now())
+                .build();
 
         payment.setCreatedDateTime(OffsetDateTime.now(ZoneOffset.UTC));
 
