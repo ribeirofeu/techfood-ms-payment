@@ -23,7 +23,6 @@ public class ProcessPaymentDTO {
     public static ProcessPaymentDTO fromPayment(Payment payment) {
         return ProcessPaymentDTO.builder()
                 .id(payment.getId())
-                .qrCode(payment.getQrCode())
                 .totalValue(payment.getTotalValue())
                 .build();
     }

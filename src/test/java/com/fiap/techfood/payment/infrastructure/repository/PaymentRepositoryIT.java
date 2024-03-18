@@ -37,7 +37,6 @@ class PaymentRepositoryIT {
         assertThat(paymentSaved.getStatus()).isEqualTo(payment.getStatus());
         assertThat(paymentSaved.getTotalValue()).isEqualTo(payment.getTotalValue());
         assertThat(paymentSaved.getCreatedDateTime()).isEqualTo(payment.getCreatedDateTime());
-        assertThat(paymentSaved.getQrCode()).isEqualTo(payment.getQrCode());
     }
 
     @Test
@@ -87,7 +86,6 @@ class PaymentRepositoryIT {
         var payment = repository.findById(2).orElseThrow();
         var oldStatus = payment.getStatus();
         var id = payment.getId();
-        var qrCode = payment.getQrCode();
         var totalValue = payment.getTotalValue();
 
         payment.setStatus(PaymentStatus.REJECTED);
@@ -98,7 +96,6 @@ class PaymentRepositoryIT {
         //Arrange
         assertThat(oldStatus).isNotEqualTo(payment.getStatus());
         assertThat(id).isEqualTo(payment.getId());
-        assertThat(qrCode).isEqualTo(payment.getQrCode());
         assertThat(totalValue).isEqualTo(payment.getTotalValue());
         assertThat(payment.toString()).isNotEmpty();
     }

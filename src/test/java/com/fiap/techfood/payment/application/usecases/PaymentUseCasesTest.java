@@ -3,7 +3,7 @@ package com.fiap.techfood.payment.application.usecases;
 import com.fiap.techfood.payment.application.dto.request.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
-import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
+import com.fiap.techfood.payment.application.interfaces.gateways.PaymentMessageSender;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
 import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
@@ -16,10 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -37,7 +34,7 @@ class PaymentUseCasesTest {
     private PaymentRepository mockRepository;
 
     @Mock
-    private Notification mockNotification;
+    private PaymentMessageSender paymentMessageSender;
 
     private PaymentUseCasesImpl mockPaymentUseCases;
 
@@ -46,7 +43,7 @@ class PaymentUseCasesTest {
     @BeforeEach
     void setup() {
         openMocks = MockitoAnnotations.openMocks(this);
-        mockPaymentUseCases = new PaymentUseCasesImpl(mockRepository, mockNotification);
+        mockPaymentUseCases = new PaymentUseCasesImpl(mockRepository, paymentMessageSender);
     }
 
     @AfterEach
@@ -139,8 +136,7 @@ class PaymentUseCasesTest {
         var paymentProcessedDTO = new PaymentProcessedDTO(2L, PaymentStatus.APPROVED);
 
         when(mockRepository.findById(anyLong())).thenReturn(Optional.of(generatePayment()));
-        when(mockNotification.send(any()))
-                .thenReturn(new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK));
+        doNothing().when(paymentMessageSender).publish(any());
         doNothing().when(mockRepository).updatePaymentStatus(any());
 
         //Act
@@ -151,7 +147,7 @@ class PaymentUseCasesTest {
         assertThat(paymentDTO.toString()).isNotNull();
         verify(mockRepository, times(1)).findById(anyLong());
         verify(mockRepository, times(1)).updatePaymentStatus(any());
-        verify(mockNotification, times(1)).send(any());
+        verify(paymentMessageSender, times(1)).publish(any());
     }
 
     @Test
@@ -170,27 +166,7 @@ class PaymentUseCasesTest {
         assertThat(exception.getMessage()).isEqualTo("Pedido não encontrado.");
         verify(mockRepository, times(1)).findById(anyLong());
         verify(mockRepository, times(0)).updatePaymentStatus(any());
-        verify(mockNotification, times(0)).send(any());
-    }
-
-    @Test
-    void processPayment_InvalidNotification_ServiceUnavailable_ThrowsBusinessException() {
-        //Arrange
-        var paymentProcessedDTO = new PaymentProcessedDTO(1L, PaymentStatus.APPROVED);
-
-        when(mockRepository.findById(anyLong())).thenReturn(Optional.of(generatePayment()));
-        when(mockNotification.send(any())).thenThrow(new RestClientException("Serviço indisponivel ou URI inválida"));
-
-        //Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> mockPaymentUseCases.processPayment(paymentProcessedDTO));
-
-        //Assert
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.SERVICE_UNAVAILABLE.getCode());
-        assertThat(exception.getMessage())
-                .isEqualTo("Falha ao enviar pedido para produção. Tente novamente mais tarde! :(");
-        verify(mockRepository, times(1)).findById(anyLong());
-        verify(mockNotification, times(1)).send(any());
+        verify(paymentMessageSender, times(0)).publish(any());
     }
 
     @Test
@@ -244,7 +220,6 @@ class PaymentUseCasesTest {
 
     private Payment generatePayment() {
         var payment = Payment.generate(1L, BigDecimal.valueOf(10));
-        payment.setQrCode("NjcyMzgzMDgyMA==");
         return payment;
     }
 }

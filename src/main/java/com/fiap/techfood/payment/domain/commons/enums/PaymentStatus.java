@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum PaymentStatus {
     WAITING_FOR_PAYMENT(0),
     APPROVED(1),
-    REJECTED(2);
+    REJECTED(2),
+    CREATED(3);
 
     private final int status;
 }

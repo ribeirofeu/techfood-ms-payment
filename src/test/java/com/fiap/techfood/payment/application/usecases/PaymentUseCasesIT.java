@@ -2,14 +2,14 @@ package com.fiap.techfood.payment.application.usecases;
 
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
-import com.fiap.techfood.payment.application.dto.request.ProductionDTO;
-import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
+import com.fiap.techfood.payment.application.interfaces.gateways.PaymentMessageSender;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
 import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
 import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
+import com.fiap.techfood.payment.domain.payment.ReceivedPaymentStatusEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class PaymentUseCasesIT {
     private PaymentRepository repository;
 
     @Mock
-    private Notification service;
+    private PaymentMessageSender paymentMessageSender;
 
     @InjectMocks
     private PaymentUseCasesImpl mockUseCases;
@@ -54,7 +54,7 @@ class PaymentUseCasesIT {
     @BeforeEach
     void setup() {
         openMocks = MockitoAnnotations.openMocks(this);
-        mockUseCases = new PaymentUseCasesImpl(repository, service);
+        mockUseCases = new PaymentUseCasesImpl(repository, paymentMessageSender);
     }
 
     @AfterEach
@@ -180,7 +180,7 @@ class PaymentUseCasesIT {
 
         doAnswer(invocation -> {
             return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.OK);
-        }).when(service).send(any(ProductionDTO.class));
+        }).when(paymentMessageSender).publish(any(ReceivedPaymentStatusEvent.class));
 
         // Act
         var paymentDTO = mockUseCases.processPayment(paymentProcessedDTO);
@@ -188,7 +188,7 @@ class PaymentUseCasesIT {
         //Assert
         assertThat(paymentDTO).isNotNull();
         assertThat(paymentDTO.toString()).isNotNull();
-        verify(service, times(1)).send(any(ProductionDTO.class));
+        verify(paymentMessageSender, times(1)).publish(any(ReceivedPaymentStatusEvent.class));
     }
 
     @Test
@@ -198,7 +198,7 @@ class PaymentUseCasesIT {
 
         doAnswer(invocation -> {
             return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.CREATED);
-        }).when(service).send(any(ProductionDTO.class));
+        }).when(paymentMessageSender).publish(any(ReceivedPaymentStatusEvent.class));
 
         // Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,
@@ -214,7 +214,7 @@ class PaymentUseCasesIT {
 
         doAnswer(invocation -> {
             return new ResponseEntity<>("Mensagem de resposta simulada", HttpStatus.CREATED);
-        }).when(service).send(any(ProductionDTO.class));
+        }).when(paymentMessageSender).publish(any(ReceivedPaymentStatusEvent.class));
 
         // Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,

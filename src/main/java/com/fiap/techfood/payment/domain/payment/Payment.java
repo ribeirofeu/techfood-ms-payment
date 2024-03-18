@@ -18,8 +18,8 @@ import java.time.ZoneOffset;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Payment {
     private long id;
+    private Long customerId;
     private BigDecimal totalValue;
-    private String qrCode;
     private OffsetDateTime createdDateTime;
     private PaymentStatus status;
 
@@ -27,7 +27,6 @@ public class Payment {
         return Payment.builder()
                 .id(id)
                 .totalValue(totalValue)
-                .qrCode(QRCode.generateQRCode())
                 .createdDateTime(OffsetDateTime.now(ZoneOffset.UTC))
                 .status(PaymentStatus.WAITING_FOR_PAYMENT)
                 .build();

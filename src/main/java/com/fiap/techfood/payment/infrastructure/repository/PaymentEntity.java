@@ -18,13 +18,16 @@ import java.time.OffsetDateTime;
 public class PaymentEntity {
 
     @Id
-    @Column(name = "`id`", nullable = false)
+    @Column(name = "`id`", nullable = false, unique = true)
     private long id;
+
+    @Column(name = "`customer_id`")
+    private Long customerId;
 
     @Column(name = "`total_value`", nullable = false)
     private BigDecimal totalValue;
 
-    @Column(name = "`qr_code`", nullable = false)
+    @Column(name = "`qr_code`")
     private String qrCode;
 
     @Column(name = "`created_date`", nullable = false)
@@ -38,7 +41,7 @@ public class PaymentEntity {
         return PaymentEntity.builder()
                 .id(payment.getId())
                 .totalValue(payment.getTotalValue())
-                .qrCode(payment.getQrCode())
+                .customerId(payment.getCustomerId())
                 .createdDateTime(payment.getCreatedDateTime())
                 .status(payment.getStatus())
                 .build();
@@ -48,7 +51,7 @@ public class PaymentEntity {
         return Payment.builder()
                 .id(this.id)
                 .totalValue(this.totalValue)
-                .qrCode(this.qrCode)
+                .customerId(this.customerId)
                 .createdDateTime(this.createdDateTime)
                 .status(this.status)
                 .build();

@@ -19,6 +19,7 @@ spring:
 production:
     url: ${production.url}
 
-messaging:
+events:
     output: "arn:aws:sns:us-east-1:027260563052:created_orders_topic"
-    input: "created_order_ms_payment_queue"
+    queues:
+        created-order: "created_order_ms_payment_queue"

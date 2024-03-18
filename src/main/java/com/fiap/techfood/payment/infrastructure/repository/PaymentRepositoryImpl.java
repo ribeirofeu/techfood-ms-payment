@@ -1,7 +1,9 @@
 package com.fiap.techfood.payment.infrastructure.repository;
 
+import com.fiap.techfood.payment.domain.commons.exception.PaymentAlreadyExistsException;
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import com.fiap.techfood.payment.domain.payment.Payment;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

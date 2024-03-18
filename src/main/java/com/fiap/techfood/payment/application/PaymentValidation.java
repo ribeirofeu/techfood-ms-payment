@@ -3,9 +3,12 @@ package com.fiap.techfood.payment.application;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
+import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
 import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
+import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class PaymentValidation {
 
@@ -19,14 +22,6 @@ public class PaymentValidation {
 
         if (isInvalidTotalValue(payment.getTotalValue())) {
             return ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE;
-        }
-
-        return ErrorCodes.SUCCESS;
-    }
-
-    public static ErrorCodes processPaymentDTO(PaymentProcessedDTO paymentProcessedDTO) {
-        if (paymentProcessedDTO.getStatus() == PaymentStatus.WAITING_FOR_PAYMENT) {
-            return ErrorCodes.UNEXPECTED_STATUS;
         }
 
         return ErrorCodes.SUCCESS;

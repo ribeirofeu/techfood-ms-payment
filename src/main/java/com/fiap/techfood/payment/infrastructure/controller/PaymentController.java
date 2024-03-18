@@ -8,6 +8,7 @@ import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +28,7 @@ public class PaymentController {
     }
 
     @Tag(name = "Processa pagamento")
+    @Transactional
     @PostMapping(value = "/webhook", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaymentDTO> processPayment(@RequestBody PaymentProcessedDTO request) {
         return ResponseEntity.ok(service.processPayment(request));
