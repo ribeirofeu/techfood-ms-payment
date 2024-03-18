@@ -7,7 +7,7 @@ spring:
         password: ${database.password}
         driver-class-name: ${database.driver-class-name}
     profiles:
-        active: ${APP_PROFILE:prod}
+        active: ${APP_PROFILE:dev}
     cloud:
         aws:
             region:

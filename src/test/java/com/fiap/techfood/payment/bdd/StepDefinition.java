@@ -22,7 +22,7 @@ public class StepDefinition {
 
     @Dado("que inicio o processo de pagamento de um pedido")
     public void que_inicio_o_processo_de_pagamento_de_um_pedido() {
-        var generatePaymentDTO = new GeneratePaymentDTO(1L, BigDecimal.valueOf(10.5));
+        var generatePaymentDTO = new GeneratePaymentDTO(1L);
         response = given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(generatePaymentDTO)
@@ -43,7 +43,7 @@ public class StepDefinition {
 
     @Dado("que informo um número de pedido negativo")
     public void que_informo_um_número_de_pedido_negativo() {
-        var generatePaymentDTO = new GeneratePaymentDTO(-1L, BigDecimal.valueOf(10.5));
+        var generatePaymentDTO = new GeneratePaymentDTO(-1L);
         response = given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(generatePaymentDTO)
@@ -57,51 +57,51 @@ public class StepDefinition {
                 .body(equalTo(ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER.getMessage()));
     }
 
-    @Dado("que não informo um número de pedido")
-    public void que_não_informo_um_número_de_pedido() {
-        var generatePaymentDTO = new GeneratePaymentDTO(null, BigDecimal.valueOf(10.5));
-        response = given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(generatePaymentDTO)
-                .post(ENDPOINT_API);
-    }
-
-    @Então("deverá ser retornado uma mensagem informativa")
-    public void deverá_ser_retornado_uma_mensagem_informativa() {
-        response.then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(equalTo(ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER.getMessage()));
-    }
-
-    @Dado("que informe o valor total do pedido negativo")
-    public void que_informe_o_valor_total_do_pedido_negativo() {
-        var generatePaymentDTO = new GeneratePaymentDTO(1L, BigDecimal.valueOf(-1));
-        response = given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(generatePaymentDTO)
-                .post(ENDPOINT_API);
-    }
-
-    @Então("deverá ser retornado uma mensagem de erro")
-    public void deverá_ser_retornado_uma_mensagem_de_erro() {
-        response.then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(equalTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage()));
-    }
-
-    @Dado("que não informe o valor total do pedido")
-    public void que_não_informe_o_valor_total_do_pedido() {
-        var generatePaymentDTO = new GeneratePaymentDTO(1L, null);
-        response = given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(generatePaymentDTO)
-                .post(ENDPOINT_API);
-    }
-
-    @Então("deverá ser retornado uma mensagem de erro informativo")
-    public void deverá_ser_retornado_uma_mensagem_de_erro_informativo() {
-        response.then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(equalTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage()));
-    }
+//    @Dado("que não informo um número de pedido")
+//    public void que_não_informo_um_número_de_pedido() {
+//        var generatePaymentDTO = new GeneratePaymentDTO(null);
+//        response = given()
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .body(generatePaymentDTO)
+//                .post(ENDPOINT_API);
+//    }
+//
+//    @Então("deverá ser retornado uma mensagem informativa")
+//    public void deverá_ser_retornado_uma_mensagem_informativa() {
+//        response.then()
+//                .statusCode(HttpStatus.BAD_REQUEST.value())
+//                .body(equalTo(ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER.getMessage()));
+//    }
+//
+//    @Dado("que informe o valor total do pedido negativo")
+//    public void que_informe_o_valor_total_do_pedido_negativo() {
+//        var generatePaymentDTO = new GeneratePaymentDTO(1L, BigDecimal.valueOf(-1));
+//        response = given()
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .body(generatePaymentDTO)
+//                .post(ENDPOINT_API);
+//    }
+//
+//    @Então("deverá ser retornado uma mensagem de erro")
+//    public void deverá_ser_retornado_uma_mensagem_de_erro() {
+//        response.then()
+//                .statusCode(HttpStatus.BAD_REQUEST.value())
+//                .body(equalTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage()));
+//    }
+//
+//    @Dado("que não informe o valor total do pedido")
+//    public void que_não_informe_o_valor_total_do_pedido() {
+//        var generatePaymentDTO = new GeneratePaymentDTO(1L, null);
+//        response = given()
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .body(generatePaymentDTO)
+//                .post(ENDPOINT_API);
+//    }
+//
+//    @Então("deverá ser retornado uma mensagem de erro informativo")
+//    public void deverá_ser_retornado_uma_mensagem_de_erro_informativo() {
+//        response.then()
+//                .statusCode(HttpStatus.BAD_REQUEST.value())
+//                .body(equalTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage()));
+//    }
 }

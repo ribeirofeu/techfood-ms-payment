@@ -1,6 +1,6 @@
-package com.fiap.techfood.payment.domain.utils;
+package com.fiap.techfood.payment.infrastructure.utils;
 
-import com.fiap.techfood.payment.domain.commons.utils.Utils;
+import com.fiap.techfood.payment.infrastructure.utils.Utils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

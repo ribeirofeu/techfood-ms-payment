@@ -10,11 +10,13 @@ import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
 import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import com.fiap.techfood.payment.domain.payment.Payment;
+import com.fiap.techfood.payment.infrastructure.utils.ExternalServicePaymentFake;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +41,9 @@ class PaymentUseCasesTest {
     @Mock
     private Notification mockNotification;
 
+    @Autowired
+    private ExternalServicePaymentFake externalServicePaymentFake;
+
     private PaymentUseCasesImpl mockPaymentUseCases;
 
     AutoCloseable openMocks;
@@ -46,7 +51,7 @@ class PaymentUseCasesTest {
     @BeforeEach
     void setup() {
         openMocks = MockitoAnnotations.openMocks(this);
-        mockPaymentUseCases = new PaymentUseCasesImpl(mockRepository, mockNotification);
+        mockPaymentUseCases = new PaymentUseCasesImpl(mockRepository, mockNotification, externalServicePaymentFake);
     }
 
     @AfterEach
@@ -59,6 +64,7 @@ class PaymentUseCasesTest {
         //Arrange
         var generateQRCode = generatePaymentDTO();
 
+        when(mockRepository.findById(generateQRCode.getOrderId())).thenReturn(Optional.of(generatePayment()));
         when(mockRepository.save(any())).thenReturn(generatePayment());
 
         //Act
@@ -68,7 +74,6 @@ class PaymentUseCasesTest {
         assertThat(processPaymentDto).isNotNull();
         assertThat(processPaymentDto.toString()).isNotNull();
         assertThat(processPaymentDto.getId()).isEqualTo(generateQRCode.getOrderId());
-        assertThat(processPaymentDto.getTotalValue()).isEqualTo(generateQRCode.getTotalValue());
         assertThat(processPaymentDto.getQrCode()).isNotEmpty();
         verify(mockRepository, times(1)).save(any());
     }
@@ -76,7 +81,7 @@ class PaymentUseCasesTest {
     @Test
     void generatePaymentQRCode_InvalidRequest_WithNegativeId_ThrowsBusinessException() {
         //Arrange
-        var generateQRCode = new GeneratePaymentDTO(-1L, BigDecimal.valueOf(10));
+        var generateQRCode = new GeneratePaymentDTO(-1L);
 
         //Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,
@@ -91,7 +96,7 @@ class PaymentUseCasesTest {
     @Test
     void generatePaymentQRCode_InvalidRequest_WithNullId_ThrowsBusinessException() {
         //Arrange
-        var generateQRCode = new GeneratePaymentDTO(null, BigDecimal.valueOf(10));
+        var generateQRCode = new GeneratePaymentDTO(null);
 
         //Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,
@@ -103,35 +108,6 @@ class PaymentUseCasesTest {
         assertThat(exception.getMessage()).isEqualTo(ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER.getMessage());
     }
 
-    @Test
-    void generatePaymentQRCode_InvalidRequest_WithInvalidTotalValue_ThrowsBusinessException() {
-        //Arrange
-        var generateQRCode =new GeneratePaymentDTO(1L, BigDecimal.valueOf(-10));
-
-        //Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> mockPaymentUseCases.generatePaymentQRCode(generateQRCode));
-
-        //Assert
-        verify(mockRepository, times(0)).save(any());
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
-        assertThat(exception.getMessage()).isEqualTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage());
-    }
-
-    @Test
-    void generatePaymentQRCode_InvalidRequest_WithNullTotalValue_ThrowsBusinessException() {
-        //Arrange
-        var generateQRCode = new GeneratePaymentDTO(1L, null);
-
-        //Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> mockPaymentUseCases.generatePaymentQRCode(generateQRCode));
-
-        //Assert
-        verify(mockRepository, times(0)).save(any());
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
-        assertThat(exception.getMessage()).isEqualTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage());
-    }
 
     @Test
     void processPayment_ValidRequest_Success() {
@@ -231,7 +207,7 @@ class PaymentUseCasesTest {
     }
 
     private GeneratePaymentDTO generatePaymentDTO() {
-        return new GeneratePaymentDTO(1L, BigDecimal.valueOf(10));
+        return new GeneratePaymentDTO(1L);
     }
 
     private ProcessPaymentDTO processPaymentDTO() {

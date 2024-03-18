@@ -6,6 +6,7 @@ import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.application.dto.request.ProductionDTO;
 import com.fiap.techfood.payment.application.dto.response.PaymentDTO;
+import com.fiap.techfood.payment.application.interfaces.gateway.ExternalServicePayment;
 import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
@@ -21,21 +22,26 @@ public class PaymentUseCasesImpl implements PaymentUseCases {
     private final PaymentRepository repository;
     private final Notification notification;
 
-    public PaymentUseCasesImpl(PaymentRepository repository, Notification notification) {
+    private final ExternalServicePayment externalServicePayment;
+
+    public PaymentUseCasesImpl(PaymentRepository repository, Notification notification, ExternalServicePayment externalServicePayment) {
         this.repository = repository;
         this.notification = notification;
+        this.externalServicePayment = externalServicePayment;
     }
 
     @Override
     public ProcessPaymentDTO generatePaymentQRCode(GeneratePaymentDTO request) {
 
-        ErrorCodes error = PaymentValidation.generatePaymentDTO(request);
+        ErrorCodes errorCodes = PaymentValidation.generatePaymentDTO(request);
+        if (errorCodes != ErrorCodes.SUCCESS)
+            throw new BusinessException(errorCodes.getMessage(), HttpStatusCodes.BAD_REQUEST);
 
-        if (error != ErrorCodes.SUCCESS) {
-            throw new BusinessException(error.getMessage(), HttpStatusCodes.BAD_REQUEST);
-        }
+        Payment payment = repository.findById(request.getOrderId()).orElseThrow(
+                () -> new BusinessException("Pedido não encontrado.", HttpStatusCodes.BAD_REQUEST)
+        );
 
-        Payment payment = Payment.generate(request.getOrderId(), request.getTotalValue());
+        payment.setQrCode(externalServicePayment.generateQRCode());
 
         repository.save(payment);
 

@@ -33,8 +33,8 @@ public class PaymentController {
     }
 
     @Tag(name = "Obter inforções de pagamento")
-    @GetMapping("/{orderId}")
-    public ResponseEntity<PaymentDTO> getPayment(@PathVariable long orderId) {
-        return ResponseEntity.ok(service.getPayment(orderId));
+    @GetMapping(value = "/")
+    public ResponseEntity<PaymentDTO> getPayment(@RequestBody GeneratePaymentDTO request) {
+        return ResponseEntity.ok(service.getPayment(request.getOrderId()));
     }
 }

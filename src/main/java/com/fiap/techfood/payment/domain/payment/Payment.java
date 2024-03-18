@@ -2,15 +2,12 @@ package com.fiap.techfood.payment.domain.payment;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
-import com.fiap.techfood.payment.domain.commons.utils.QRCode;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 @Getter
 @Setter
@@ -27,10 +24,7 @@ public class Payment {
         return Payment.builder()
                 .id(id)
                 .totalValue(totalValue)
-                .qrCode(QRCode.generateQRCode())
-                .createdDateTime(OffsetDateTime.now(ZoneOffset.UTC))
                 .status(PaymentStatus.WAITING_FOR_PAYMENT)
                 .build();
     }
-
 }

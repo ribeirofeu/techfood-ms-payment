@@ -36,7 +36,7 @@ class PaymentControllerIT {
 
     @Test
     void givenValidPayment_whenSavePayment_thenShouldReturnProcessPaymentDTO() {
-        var generatePaymentDTO = new GeneratePaymentDTO(1L, BigDecimal.valueOf(10.5));
+        var generatePaymentDTO = new GeneratePaymentDTO(2L);
 
         given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -51,7 +51,7 @@ class PaymentControllerIT {
 
     @Test
     void givenInvalidOrderId_whenSavePayment_thenShouldReturnBadRequest() {
-        var generatePaymentDTO = new GeneratePaymentDTO(-1L, BigDecimal.valueOf(10.5));
+        var generatePaymentDTO = new GeneratePaymentDTO(-1L);
         var expectedMessage = ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER.getMessage();
         given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -65,36 +65,8 @@ class PaymentControllerIT {
 
     @Test
     void givenNullOrderId_whenSavePayment_thenShouldReturnBadRequest() {
-        var generatePaymentDTO = new GeneratePaymentDTO(null, BigDecimal.valueOf(10.5));
+        var generatePaymentDTO = new GeneratePaymentDTO(null);
         var expectedMessage = ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER.getMessage();
-        given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(generatePaymentDTO)
-                .when()
-                .post("/payment/generate")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(equalTo(expectedMessage));
-    }
-
-    @Test
-    void givenNullTotalValue_whenSavePayment_thenShouldReturnBadRequest() {
-        var generatePaymentDTO = new GeneratePaymentDTO(1L, null);
-        var expectedMessage = ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage();
-        given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(generatePaymentDTO)
-                .when()
-                .post("/payment/generate")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(equalTo(expectedMessage));
-    }
-
-    @Test
-    void givenNegativeTotalValue_whenSavePayment_thenShouldReturnBadRequest() {
-        var generatePaymentDTO = new GeneratePaymentDTO(1L, BigDecimal.valueOf(-1));
-        var expectedMessage = ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage();
         given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(generatePaymentDTO)
@@ -120,11 +92,12 @@ class PaymentControllerIT {
 
     @Test
     void givenPaymentDTO_whenOrderIdIsValid_thenShouldReturnPaymentDTO() {
-        long orderId = 1L;
+        long orderId = 2L;
         given()
-                .param("orderId", orderId)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(orderId)
                 .when()
-                .get("/payment/"+orderId)
+                .get("/payment/")
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body(matchesJsonSchemaInClasspath("schemas/payment.schema.json"));
@@ -134,9 +107,10 @@ class PaymentControllerIT {
     void givenInvalidPaymentDTO_whenOrderIdIsInvalid_thenShouldReturnBadRequest() {
         long orderId = 10L;
         given()
-                .param("orderId", orderId)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(orderId)
                 .when()
-                .get("/payment/"+orderId)
+                .get("/payment/")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body(equalTo("Pedido não encontrado."));
