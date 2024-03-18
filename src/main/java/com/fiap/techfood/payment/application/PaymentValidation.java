@@ -20,18 +20,10 @@ public class PaymentValidation {
             return ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER;
         }
 
-        if (isInvalidTotalValue(payment.getTotalValue())) {
-            return ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE;
-        }
-
         return ErrorCodes.SUCCESS;
     }
 
     private static boolean isInvalidOrderId(Long id) {
         return id == null || id < 0;
-    }
-
-    private static boolean isInvalidTotalValue(BigDecimal value) {
-        return value == null || value.compareTo(BigDecimal.ZERO) < 0;
     }
 }

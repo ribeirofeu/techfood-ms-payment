@@ -7,8 +7,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PaymentTest {
 
@@ -53,23 +52,6 @@ class PaymentTest {
         assertEquals(newTotalValue, payment.getTotalValue());
         assertEquals(newCreatedDateTime, payment.getCreatedDateTime());
         assertEquals(newStatus, payment.getStatus());
-    }
-
-    @Test
-    void testPaymentBuilder() {
-        // Arrange
-        long id = 1L;
-        BigDecimal totalValue = BigDecimal.valueOf(100.0);
-
-        // Act
-        Payment payment = Payment.generate(id, totalValue);
-
-        // Assert
-        assertNotNull(payment);
-        assertEquals(id, payment.getId());
-        assertEquals(totalValue, payment.getTotalValue());
-        assertNotNull(payment.getCreatedDateTime());
-        assertEquals(PaymentStatus.WAITING_FOR_PAYMENT, payment.getStatus());
     }
 
 }

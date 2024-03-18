@@ -11,6 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +28,9 @@ class PaymentRepositoryIT {
     @Test
     void givenValidPayment_whenSavePayment_thenShouldReturnSavedPayment() {
         //Arrange
-        var payment = Payment.generate(10, BigDecimal.valueOf(10.5));
+        var payment = Payment.builder().id(10).totalValue(BigDecimal.valueOf(10.5)).build();
+
+        payment.setCreatedDateTime(OffsetDateTime.now(ZoneOffset.UTC));
 
         //Act
         var paymentSaved = repository.save(payment);

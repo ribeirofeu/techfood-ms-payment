@@ -1,4 +1,4 @@
-package com.fiap.techfood.payment.domain.commons.utils;
+package com.fiap.techfood.payment.infrastructure.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

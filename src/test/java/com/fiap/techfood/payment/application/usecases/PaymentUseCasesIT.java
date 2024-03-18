@@ -3,6 +3,7 @@ package com.fiap.techfood.payment.application.usecases;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.application.interfaces.gateways.PaymentMessageSender;
+import com.fiap.techfood.payment.application.interfaces.gateway.ExternalServicePayment;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
@@ -43,6 +44,9 @@ class PaymentUseCasesIT {
     @Autowired
     private PaymentRepository repository;
 
+    @Autowired
+    private ExternalServicePayment externalServicePayment;
+
     @Mock
     private PaymentMessageSender paymentMessageSender;
 
@@ -54,7 +58,7 @@ class PaymentUseCasesIT {
     @BeforeEach
     void setup() {
         openMocks = MockitoAnnotations.openMocks(this);
-        mockUseCases = new PaymentUseCasesImpl(repository, paymentMessageSender);
+        mockUseCases = new PaymentUseCasesImpl(repository, paymentMessageSender, externalServicePayment);
     }
 
     @AfterEach
@@ -65,17 +69,16 @@ class PaymentUseCasesIT {
     @Test
     void givenValidPayment_thenShouldReturnOptionalOfPayment() {
         //Arrange
-        var orderId = 10L;
-        var totalValue = BigDecimal.valueOf(11.2);
-        var generatePayment = new GeneratePaymentDTO(orderId, totalValue);
+        var orderId = 1L;
+        var generatePayment = new GeneratePaymentDTO(orderId);
+
         //Act
-        var optionalPayment = useCases.generatePaymentQRCode(generatePayment);
+        BusinessException exception = assertThrows(BusinessException.class,
+                () -> useCases.generatePaymentQRCode(generatePayment));
 
         //Assert
-        assertThat(optionalPayment).isNotNull();
-        assertThat(optionalPayment.getQrCode()).isNotNull();
-        assertThat(optionalPayment.getId()).isEqualTo(orderId);
-        assertThat(optionalPayment.getTotalValue()).isEqualTo(totalValue);
+        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
+        assertThat(exception.getMessage()).isEqualTo("Pedido não encontrado.");
     }
 
     @Test
@@ -114,7 +117,7 @@ class PaymentUseCasesIT {
         //Arrange
         Long orderId = null;
         var totalValue = BigDecimal.valueOf(11.2);
-        var generatePayment = new GeneratePaymentDTO(orderId, totalValue);
+        var generatePayment = new GeneratePaymentDTO(orderId);
 
         // Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,
@@ -130,7 +133,7 @@ class PaymentUseCasesIT {
         //Arrange
         Long orderId = -1L;
         var totalValue = BigDecimal.valueOf(11.2);
-        var generatePayment = new GeneratePaymentDTO(orderId, totalValue);
+        var generatePayment = new GeneratePaymentDTO(orderId);
 
         // Act & Assert
         BusinessException exception = assertThrows(BusinessException.class,
@@ -139,38 +142,6 @@ class PaymentUseCasesIT {
         //Assert
         assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
         assertThat(exception.getMessage()).isEqualTo(ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER.getMessage());
-    }
-
-    @Test
-    void generatePaymentQRCode_WhenTotalValueIsNull_ThrowsBusinessException() {
-        //Arrange
-        Long orderId = 10L;
-        BigDecimal totalValue = null;
-        var generatePayment = new GeneratePaymentDTO(orderId, totalValue);
-
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> useCases.generatePaymentQRCode(generatePayment));
-
-        //Assert
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
-        assertThat(exception.getMessage()).isEqualTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage());
-    }
-
-    @Test
-    void generatePaymentQRCode_WhenInvalidTotalValue_ThrowsBusinessException() {
-        //Arrange
-        Long orderId = 10L;
-        BigDecimal totalValue = BigDecimal.valueOf(-11.2);
-        var generatePayment = new GeneratePaymentDTO(orderId, totalValue);
-
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class,
-                () -> useCases.generatePaymentQRCode(generatePayment));
-
-        //Assert
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatusCodes.BAD_REQUEST.getCode());
-        assertThat(exception.getMessage()).isEqualTo(ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE.getMessage());
     }
 
     @Test

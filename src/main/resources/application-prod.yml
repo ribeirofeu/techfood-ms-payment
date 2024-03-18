@@ -11,4 +11,4 @@ spring:
       ddl-auto: update
 
 production:
-  url: "http://localhost:8082/production"
+  url: "https://z2l3q.wiremockapi.cloud/production"
