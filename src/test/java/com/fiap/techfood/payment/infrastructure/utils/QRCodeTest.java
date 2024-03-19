@@ -1,7 +1,6 @@
 package com.fiap.techfood.payment.infrastructure.utils;
 
-import com.fiap.techfood.payment.application.interfaces.gateway.ExternalServicePayment;
-import com.fiap.techfood.payment.infrastructure.utils.ExternalServicePaymentFake;
+import com.fiap.techfood.payment.application.interfaces.gateways.ExternalServicePayment;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

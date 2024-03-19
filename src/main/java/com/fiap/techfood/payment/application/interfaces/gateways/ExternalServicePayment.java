@@ -1,4 +1,4 @@
-package com.fiap.techfood.payment.application.interfaces.gateway;
+package com.fiap.techfood.payment.application.interfaces.gateways;
 
 public interface ExternalServicePayment {
 

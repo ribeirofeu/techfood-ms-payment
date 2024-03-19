@@ -1,6 +1,6 @@
 package com.fiap.techfood.payment.infrastructure.utils;
 
-import com.fiap.techfood.payment.application.interfaces.gateway.ExternalServicePayment;
+import com.fiap.techfood.payment.application.interfaces.gateways.ExternalServicePayment;
 
 import java.security.SecureRandom;
 

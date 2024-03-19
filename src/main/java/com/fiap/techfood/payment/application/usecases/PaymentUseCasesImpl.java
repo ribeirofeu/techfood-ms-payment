@@ -7,7 +7,7 @@ import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.application.dto.response.PaymentDTO;
 import com.fiap.techfood.payment.application.interfaces.gateways.PaymentMessageSender;
-import com.fiap.techfood.payment.application.interfaces.gateway.ExternalServicePayment;
+import com.fiap.techfood.payment.application.interfaces.gateways.ExternalServicePayment;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
 import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;

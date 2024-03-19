@@ -1,7 +1,7 @@
 package com.fiap.techfood.payment.infrastructure.configuration;
 
 import com.fiap.techfood.payment.application.interfaces.gateways.PaymentMessageSender;
-import com.fiap.techfood.payment.application.interfaces.gateway.ExternalServicePayment;
+import com.fiap.techfood.payment.application.interfaces.gateways.ExternalServicePayment;
 import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import com.fiap.techfood.payment.infrastructure.messaging.senders.PaymentMessageSnsSender;
