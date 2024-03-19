@@ -94,10 +94,9 @@ class PaymentControllerIT {
     void givenPaymentDTO_whenOrderIdIsValid_thenShouldReturnPaymentDTO() {
         long orderId = 2L;
         given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderId)
+                .pathParams("orderId",orderId)
                 .when()
-                .get("/payment/")
+                .get("/payment/{orderId}")
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body(matchesJsonSchemaInClasspath("schemas/payment.schema.json"));
@@ -107,10 +106,9 @@ class PaymentControllerIT {
     void givenInvalidPaymentDTO_whenOrderIdIsInvalid_thenShouldReturnBadRequest() {
         long orderId = 10L;
         given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderId)
+                .pathParams("orderId",orderId)
                 .when()
-                .get("/payment/")
+                .get("/payment/{orderId}")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body(equalTo("Pedido não encontrado."));
