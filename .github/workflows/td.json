@@ -1,0 +1,96 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:027260563052:task-definition/td-techfood-ms-payment",
+  "containerDefinitions": [
+    {
+      "name": "ms-payment",
+      "image": "027260563052.dkr.ecr.us-east-1.amazonaws.com/ms-payment",
+      "cpu": 1024,
+      "memoryReservation": 666,
+      "portMappings": [
+        {
+          "name": "http_ms_payment",
+          "containerPort": 8081,
+          "hostPort": 0,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "ulimits": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/td-techfood-ms-payment",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        },
+        "secretOptions": []
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f localhost:8081/payment/actuator/health || exit 1"
+        ],
+        "interval": 5,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
+      "systemControls": []
+    }
+  ],
+  "family": "td-techfood-ms-payment",
+  "executionRoleArn": "arn:aws:iam::027260563052:role/ecsTaskExecutionRole",
+  "networkMode": "bridge",
+  "revision": 3,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+    },
+    {
+      "name": "ecs.capability.container-health-check"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": [
+    "EC2"
+  ],
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2024-03-20T15:06:39.685Z",
+  "registeredBy": "arn:aws:iam::027260563052:root",
+  "tags": []
+}
