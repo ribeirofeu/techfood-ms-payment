@@ -12,7 +12,3 @@ spring:
 
 production:
   url: "https://z2l3q.wiremockapi.cloud/production"
-
-
- # Senha:  hc7GNsj8wAim1uQ2h6az
- # User: admin
