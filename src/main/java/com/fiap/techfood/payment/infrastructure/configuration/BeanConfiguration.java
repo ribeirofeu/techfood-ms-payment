@@ -2,10 +2,8 @@ package com.fiap.techfood.payment.infrastructure.configuration;
 
 import com.fiap.techfood.payment.application.interfaces.gateways.PaymentMessageSender;
 import com.fiap.techfood.payment.application.interfaces.gateways.ExternalServicePayment;
-import com.fiap.techfood.payment.application.interfaces.usecases.Notification;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import com.fiap.techfood.payment.infrastructure.messaging.senders.PaymentMessageSnsSender;
-import com.fiap.techfood.payment.infrastructure.service.NotificationImpl;
 import com.fiap.techfood.payment.application.usecases.PaymentUseCasesImpl;
 import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
 import io.awspring.cloud.sns.core.SnsTemplate;
@@ -29,11 +27,6 @@ public class BeanConfiguration {
     @Bean
     PaymentMessageSender paymentMessageSender(SnsTemplate snsTemplate) {
         return new PaymentMessageSnsSender(snsTemplate);
-    }
-
-    @Bean
-    Notification notification(RestTemplate restTemplate) {
-        return new NotificationImpl(restTemplate);
     }
 
     @Bean
