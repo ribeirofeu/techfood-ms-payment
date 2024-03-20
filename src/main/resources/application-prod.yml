@@ -1,7 +1,7 @@
 database:
-  username: techfood
-  password: techfood
-  url: jdbc:mysql://db:3306/techfood_payment
+  username: ${DATABASE_USER}
+  password: ${DATABASE_PASSWORD}
+  url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
   driver-class-name: com.mysql.cj.jdbc.Driver
 
 spring:
@@ -9,10 +9,3 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: update
-
-production:
-  url: "https://z2l3q.wiremockapi.cloud/production"
-
-
- # Senha:  hc7GNsj8wAim1uQ2h6az
- # User: admin

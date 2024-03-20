@@ -5,7 +5,7 @@
       "name": "ms-payment",
       "image": "027260563052.dkr.ecr.us-east-1.amazonaws.com/ms-payment",
       "cpu": 1024,
-      "memoryReservation": 666,
+      "memoryReservation": 512,
       "portMappings": [
         {
           "name": "http_ms_payment",
