@@ -7,8 +7,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PaymentTest {
 
@@ -25,7 +24,6 @@ class PaymentTest {
         Payment payment = Payment.builder()
                 .id(id)
                 .totalValue(totalValue)
-                .qrCode(qrCode)
                 .createdDateTime(createdDateTime)
                 .status(status)
                 .build();
@@ -33,7 +31,6 @@ class PaymentTest {
         // Assert
         assertEquals(id, payment.getId());
         assertEquals(totalValue, payment.getTotalValue());
-        assertEquals(qrCode, payment.getQrCode());
         assertEquals(createdDateTime, payment.getCreatedDateTime());
         assertEquals(status, payment.getStatus());
 
@@ -47,34 +44,14 @@ class PaymentTest {
         // Act: Set new values
         payment.setId(newId);
         payment.setTotalValue(newTotalValue);
-        payment.setQrCode(newQrCode);
         payment.setCreatedDateTime(newCreatedDateTime);
         payment.setStatus(newStatus);
 
         // Assert: Verify new values
         assertEquals(newId, payment.getId());
         assertEquals(newTotalValue, payment.getTotalValue());
-        assertEquals(newQrCode, payment.getQrCode());
         assertEquals(newCreatedDateTime, payment.getCreatedDateTime());
         assertEquals(newStatus, payment.getStatus());
-    }
-
-    @Test
-    void testPaymentBuilder() {
-        // Arrange
-        long id = 1L;
-        BigDecimal totalValue = BigDecimal.valueOf(100.0);
-
-        // Act
-        Payment payment = Payment.generate(id, totalValue);
-
-        // Assert
-        assertNotNull(payment);
-        assertEquals(id, payment.getId());
-        assertEquals(totalValue, payment.getTotalValue());
-        assertNotNull(payment.getQrCode());
-        assertNotNull(payment.getCreatedDateTime());
-        assertEquals(PaymentStatus.WAITING_FOR_PAYMENT, payment.getStatus());
     }
 
 }

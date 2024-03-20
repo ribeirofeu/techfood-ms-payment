@@ -1,16 +1,15 @@
 package com.fiap.techfood.payment.infrastructure.controller;
 
-import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.ProcessPaymentDTO;
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.application.dto.response.PaymentDTO;
 import com.fiap.techfood.payment.application.interfaces.usecases.PaymentUseCases;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/payment")
@@ -29,8 +28,15 @@ public class PaymentController {
     }
 
     @Tag(name = "Processa pagamento")
+    @Transactional
     @PostMapping(value = "/webhook", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PaymentDTO> processPayment(@RequestBody ProcessPaymentDTO request) {
+    public ResponseEntity<PaymentDTO> processPayment(@RequestBody PaymentProcessedDTO request) {
         return ResponseEntity.ok(service.processPayment(request));
+    }
+
+    @Tag(name = "Obter inforções de pagamento")
+    @GetMapping(value = "/{orderId}")
+    public ResponseEntity<PaymentDTO> getPayment(@PathVariable Long orderId) {
+        return ResponseEntity.ok(service.getPayment(orderId));
     }
 }

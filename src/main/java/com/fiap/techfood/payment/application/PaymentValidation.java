@@ -1,12 +1,14 @@
 package com.fiap.techfood.payment.application;
 
 import com.fiap.techfood.payment.application.dto.request.GeneratePaymentDTO;
-import com.fiap.techfood.payment.application.dto.ProcessPaymentDTO;
+import com.fiap.techfood.payment.application.dto.request.PaymentProcessedDTO;
 import com.fiap.techfood.payment.domain.commons.enums.ErrorCodes;
-import com.fiap.techfood.payment.domain.interfaces.gateway.PaymentRepository;
-import com.fiap.techfood.payment.domain.payment.Payment;
+import com.fiap.techfood.payment.domain.commons.enums.HttpStatusCodes;
+import com.fiap.techfood.payment.domain.commons.enums.PaymentStatus;
+import com.fiap.techfood.payment.domain.commons.exception.BusinessException;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class PaymentValidation {
 
@@ -18,40 +20,10 @@ public class PaymentValidation {
             return ErrorCodes.NULL_OR_INVALID_ORDER_NUMBER;
         }
 
-        if (isInvalidTotalValue(payment.getTotalValue())) {
-            return ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE;
-        }
-
-        return ErrorCodes.SUCCESS;
-    }
-
-    public static ErrorCodes processPaymentDTO(ProcessPaymentDTO processPaymentDTO, Payment payment) {
-
-        if (isInvalidTotalValue(processPaymentDTO.getTotalValue())) {
-            return ErrorCodes.NULL_OR_INVALID_TOTAL_VALUE;
-        }
-
-        if (isInvalidQRCode(processPaymentDTO.getQrCode())) {
-            return ErrorCodes.NULL_OR_INVALID_QRCODE;
-        }
-
-        if (!processPaymentDTO.getQrCode().equals(payment.getQrCode())) {
-            return ErrorCodes.INVALID_QRCODE;
-        }
-
         return ErrorCodes.SUCCESS;
     }
 
     private static boolean isInvalidOrderId(Long id) {
         return id == null || id < 0;
     }
-
-    private static boolean isInvalidTotalValue(BigDecimal value) {
-        return value == null || value.compareTo(BigDecimal.ZERO) < 0;
-    }
-
-    private static boolean isInvalidQRCode(String qrCode) {
-        return qrCode == null || qrCode.isEmpty();
-    }
-
 }

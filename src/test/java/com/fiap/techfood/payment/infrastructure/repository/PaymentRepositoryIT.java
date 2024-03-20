@@ -11,6 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +28,16 @@ class PaymentRepositoryIT {
     @Test
     void givenValidPayment_whenSavePayment_thenShouldReturnSavedPayment() {
         //Arrange
-        var payment = Payment.generate(10, BigDecimal.valueOf(10.5));
+        var payment = Payment.builder()
+                .id(10L)
+                .totalValue(BigDecimal.valueOf(10.0))
+                .customerId(1L)
+                .qrCode("any")
+                .status(PaymentStatus.WAITING_FOR_PAYMENT)
+                .createdDateTime(OffsetDateTime.now())
+                .build();
+
+        payment.setCreatedDateTime(OffsetDateTime.now(ZoneOffset.UTC));
 
         //Act
         var paymentSaved = repository.save(payment);
@@ -37,7 +48,6 @@ class PaymentRepositoryIT {
         assertThat(paymentSaved.getStatus()).isEqualTo(payment.getStatus());
         assertThat(paymentSaved.getTotalValue()).isEqualTo(payment.getTotalValue());
         assertThat(paymentSaved.getCreatedDateTime()).isEqualTo(payment.getCreatedDateTime());
-        assertThat(paymentSaved.getQrCode()).isEqualTo(payment.getQrCode());
     }
 
     @Test
@@ -87,7 +97,6 @@ class PaymentRepositoryIT {
         var payment = repository.findById(2).orElseThrow();
         var oldStatus = payment.getStatus();
         var id = payment.getId();
-        var qrCode = payment.getQrCode();
         var totalValue = payment.getTotalValue();
 
         payment.setStatus(PaymentStatus.REJECTED);
@@ -98,7 +107,6 @@ class PaymentRepositoryIT {
         //Arrange
         assertThat(oldStatus).isNotEqualTo(payment.getStatus());
         assertThat(id).isEqualTo(payment.getId());
-        assertThat(qrCode).isEqualTo(payment.getQrCode());
         assertThat(totalValue).isEqualTo(payment.getTotalValue());
         assertThat(payment.toString()).isNotEmpty();
     }

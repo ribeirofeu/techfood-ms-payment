@@ -1,14 +1,16 @@
-package com.fiap.techfood.payment.domain.commons.utils;
+package com.fiap.techfood.payment.infrastructure.utils;
+
+import com.fiap.techfood.payment.application.interfaces.gateways.ExternalServicePayment;
 
 import java.security.SecureRandom;
 
-public class QRCode {
+public class ExternalServicePaymentFake implements ExternalServicePayment {
 
-    private QRCode() {}
+    public ExternalServicePaymentFake() {}
 
     private static final int CODE_SIZE = 10;
 
-    public static String generateQRCode() {
+    public String generateQRCode() {
         return Utils.convertToBase64(generatePaymentCode());
     }
 
